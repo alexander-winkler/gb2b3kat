@@ -1,41 +1,20 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[211]:
 
 
 import gzip
 from glob import glob
 from xml.etree.ElementTree import iterparse
 import re
-from collections import Counter
-from matplotlib import pyplot as plt
 import requests
 import json
 import csv
 from datetime import datetime
 
 
-# In[122]:
 
-
-katalogfiles = glob('3[123].gz')
-
-
-# ## Felder
-# 
-# {http://www.loc.gov/MARC21/slim}controlfield tag 001 -> BV-Nummer
-# 035$a -> IDs
-# 264$c -> Publikationsjahr
-# 776$i -> "Elektronische Reproduktion"
-# 776$d -> Ort/Organisation
-# 776$o -> urn/doi
-# 856$u -> resolving link -> wohl relevante Kategorie
-# 856$3 -> Beschreibung ("Volltext // ...") -> wohl relevante Kategorie
-# 982$a -> Signatur
-# 982$s -> bsb-Nummer
-
-# In[212]:
+katalogfiles = glob('*.gz')
 
 
 def getGBSid(OCLC): 
@@ -50,8 +29,6 @@ def getGBSid(OCLC):
             
         return "-"
 
-
-# In[214]:
 
 
 def parseRecord(elem):
@@ -69,16 +46,8 @@ def parseRecord(elem):
         yearOfPublication = elem.find('{http://www.loc.gov/MARC21/slim}datafield[@tag="264"]/{http://www.loc.gov/MARC21/slim}subfield[@code="c"]').text
         yearOfPublication = max([int(x) for x in re.findall(r'\d{4}',yearOfPublication)])
     except Exception as e:
-        #print(e)
         yearOfPublication = None
         
-    try:
-        for el in elem.findall('{http://www.loc.gov/MARC21/slim}datafield[@tag="776"]/{http://www.loc.gov/MARC21/slim}subfield'):
-            #print(el.tag,el.attrib,el.text)
-            pass
-    except Exception as e:
-        #print(e)
-        pass
         
     try:
         urns = [x.text for x in elem.findall('{http://www.loc.gov/MARC21/slim}datafield[@tag="776"]/{http://www.loc.gov/MARC21/slim}subfield[@code="o"]')]
@@ -100,9 +69,6 @@ def parseRecord(elem):
         return output
 
 
-# In[210]:
-
-
 LOG = open("log.txt", "a")
 
 with open('bvbgbs.csv', 'a', newline='') as csvfile:
@@ -118,10 +84,4 @@ with open('bvbgbs.csv', 'a', newline='') as csvfile:
                     elem.clear()
                     
 LOG.close()
-
-
-# In[ ]:
-
-
-
 
