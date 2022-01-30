@@ -19,7 +19,7 @@ from datetime import datetime
 # In[122]:
 
 
-katalogfiles = glob('*.gz')
+katalogfiles = glob('3[123].gz')
 
 
 # ## Felder
@@ -103,9 +103,9 @@ def parseRecord(elem):
 # In[210]:
 
 
-LOG = open("log.txt", "w+")
+LOG = open("log.txt", "a")
 
-with open('bvbgbs.csv', 'w', newline='') as csvfile:
+with open('bvbgbs.csv', 'a', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter='\t')
     for kf in katalogfiles:
         with gzip.open(kf, 'rb') as fileo:
